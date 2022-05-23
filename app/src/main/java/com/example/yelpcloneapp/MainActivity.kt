@@ -18,10 +18,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-
-
+        val API_KEY2 = YelpService.API_KEY
         val yelpService = YelpApi.retrofitService
-        yelpService.searchRestaurants("Avocado Toast", "New York").enqueue(object :Callback<Any>{
+
+        yelpService.searchRestaurants("Bearer $API_KEY2","Avocado Toast", "New York").enqueue(object :Callback<Any>{
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 Log.i(TAG, "onResponse: successe ${response}")
             }
