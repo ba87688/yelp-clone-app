@@ -3,6 +3,7 @@ package com.example.yelpcloneapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.yelpcloneapp.api.YelpApi
 import com.example.yelpcloneapp.api.YelpService
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,11 +17,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-        val yelpService = retrofit.create(YelpService::class.java)
+
+
+        val yelpService = YelpApi.retrofitService
         yelpService.searchRestaurants("Avocado Toast", "New York").enqueue(object :Callback<Any>{
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 Log.i(TAG, "onResponse: successe ${response}")
