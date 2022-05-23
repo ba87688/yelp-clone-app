@@ -1,5 +1,6 @@
 package com.example.yelpcloneapp.api
 
+import com.example.yelpcloneapp.models.YelpSearchResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -18,5 +19,5 @@ interface YelpService {
         @Header("Authorization") autheader:String,
         @Query("term") searchTerm:String,
         @Query("location") location: String
-    ): Call<Any>
+    ): Call<YelpSearchResult>
 }

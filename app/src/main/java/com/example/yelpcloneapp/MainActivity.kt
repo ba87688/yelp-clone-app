@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.example.yelpcloneapp.api.YelpApi
 import com.example.yelpcloneapp.api.YelpService
+import com.example.yelpcloneapp.models.YelpSearchResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,14 +22,18 @@ class MainActivity : AppCompatActivity() {
         val API_KEY2 = YelpService.API_KEY
         val yelpService = YelpApi.retrofitService
 
-        yelpService.searchRestaurants("Bearer $API_KEY2","Avocado Toast", "New York").enqueue(object :Callback<Any>{
-            override fun onResponse(call: Call<Any>, response: Response<Any>) {
-                Log.i(TAG, "onResponse: successe ${response}")
+        yelpService.searchRestaurants("Bearer $API_KEY2","Avocado Toast", "New York").enqueue(object :Callback<YelpSearchResult>{
+            override fun onResponse(
+                call: Call<YelpSearchResult>,
+                response: Response<YelpSearchResult>
+            ) {
+                Log.i(TAG, "onResponse: ${response}")
             }
 
-            override fun onFailure(call: Call<Any>, t: Throwable) {
-                Log.i(TAG, "onFailure: failed with something ${t}")
+            override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
+                Log.i(TAG, "onFailure: $t")
             }
+
 
         }
         )
