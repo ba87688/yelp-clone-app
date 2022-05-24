@@ -26,43 +26,26 @@ private const val BASE_URL = "https://api.yelp.com/v3/"
 class MainActivity : AppCompatActivity() {
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    var avocado ="Avocado Toast"
+    val restaurants = mutableListOf<YelpRestaurant>()
+    val adapter = RestaurantsAdapter(this, restaurants)
+    val API_KEY2 = YelpService.API_KEY
+    val yelpService = YelpApi.retrofitService
 
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val restaurants = mutableListOf<YelpRestaurant>()
-        val adapter = RestaurantsAdapter(this, restaurants)
+
         val recycler = findViewById<RecyclerView>(R.id.recycler_view)
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this)
 
-        val API_KEY2 = YelpService.API_KEY
-        val yelpService = YelpApi.retrofitService
-
-        yelpService.searchRestaurants("Bearer $API_KEY2","Avocado Toast", "New York").enqueue(object :Callback<YelpSearchResult>{
-            override fun onResponse(
-                call: Call<YelpSearchResult>,
-                response: Response<YelpSearchResult>
-            ) {
-                Log.i(TAG, "onResponse: ${response}")
-                val body = response.body()
-                if(body==null){
-                    Log.w(TAG, "onResponse: did not get proper response", )
-                    return
-                }
-                restaurants.addAll(body.restaurants)
-                adapter.notifyDataSetChanged()
-            }
-
-            override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
-                Log.i(TAG, "onFailure: $t")
-            }
+        getRequestion()
 
 
-        }
-        )
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -74,17 +57,51 @@ class MainActivity : AppCompatActivity() {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.i(TAG, "onQueryTextSubmit: Hello")
+                if (query!= null){
+                    if (query.trim()!=""){
+                        avocado = query.trim().toString()
+                        getRequestion()
+
+                    }
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 Log.i(TAG, "onQueryTextChange: there are you")
+
                 return true
             }
 
         })
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    fun getRequestion(){
+        yelpService.searchRestaurants("Bearer $API_KEY2",avocado, "New York").enqueue(object :Callback<YelpSearchResult>{
+            override fun onResponse(
+                call: Call<YelpSearchResult>,
+                response: Response<YelpSearchResult>
+            ) {
+                Log.i(TAG, "onResponse: ${response}")
+                val body = response.body()
+                if(body==null){
+                    Log.w(TAG, "onResponse: did not get proper response", )
+                    return
+                }
+                restaurants.removeAll(restaurants)
+                restaurants.addAll(body.restaurants)
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
+                Log.i(TAG, "onFailure: $t")
+            }
+
+
+        }
+        )
     }
 }
