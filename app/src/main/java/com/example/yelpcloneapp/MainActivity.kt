@@ -3,6 +3,12 @@ package com.example.yelpcloneapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View.inflate
+import androidx.appcompat.resources.Compatibility.Api21Impl.inflate
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.res.ColorStateListInflaterCompat.inflate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yelpcloneapp.adapter.RestaurantsAdapter
@@ -57,5 +63,28 @@ class MainActivity : AppCompatActivity() {
 
         }
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+
+        val searchItem  = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as(SearchView)
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.i(TAG, "onQueryTextSubmit: Hello")
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                Log.i(TAG, "onQueryTextChange: there are you")
+                return true
+            }
+
+        })
+
+        return super.onCreateOptionsMenu(menu)
     }
 }
