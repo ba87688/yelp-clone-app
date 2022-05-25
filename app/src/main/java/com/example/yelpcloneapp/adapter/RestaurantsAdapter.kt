@@ -14,21 +14,34 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.yelpcloneapp.R
+import com.example.yelpcloneapp.databinding.ItemRestaurantBinding
 import com.example.yelpcloneapp.models.YelpRestaurant
 
 class RestaurantsAdapter(val context:Context,val restaurantList: List<YelpRestaurant>) :
     RecyclerView.Adapter<RestaurantsAdapter.ViewHolder>(){
 
     inner class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+
+        val binding = ItemRestaurantBinding.bind(itemView)
+
         fun bind(restaurant: YelpRestaurant) {
 
-            itemView.findViewById<TextView>(R.id.tvName).text = restaurant.name
-            itemView.findViewById<RatingBar>(R.id.ratingBar).rating = restaurant.rating.toFloat()
-            itemView.findViewById<TextView>(R.id.tvReviews).text = "${restaurant.numReviews} Reviews"
-            itemView.findViewById<TextView>(R.id.tvAddress).text = restaurant.location.address
-            itemView.findViewById<TextView>(R.id.tvDistance).text = restaurant.displayDistance()
-            itemView.findViewById<TextView>(R.id.tvDollar).text = restaurant.price
-            var imageUrl = itemView.findViewById<ImageView>(R.id.imageView)
+            binding.tvName.text = restaurant.name
+            binding.ratingBar.rating = restaurant.rating.toFloat()
+            binding.tvReviews.text = "${restaurant.numReviews} Reviews"
+            binding.tvAddress.text = restaurant.location.address
+            binding.tvDistance.text = restaurant.displayDistance()
+            binding.tvDollar.text = restaurant.price
+
+
+//            itemView.findViewById<TextView>(R.id.tvName).text = restaurant.name
+//            itemView.findViewById<RatingBar>(R.id.ratingBar).rating = restaurant.rating.toFloat()
+//            itemView.findViewById<TextView>(R.id.tvReviews).text = "${restaurant.numReviews} Reviews"
+//            itemView.findViewById<TextView>(R.id.tvAddress).text = restaurant.location.address
+//            itemView.findViewById<TextView>(R.id.tvDistance).text = restaurant.displayDistance()
+//            itemView.findViewById<TextView>(R.id.tvDollar).text = restaurant.price
+            var imageUrl = binding.imageView
+//                itemView.findViewById<ImageView>(R.id.imageView)
 
             Glide.with(context).load(restaurant.imageUrl).apply(RequestOptions().transform(
                 CenterCrop(),RoundedCorners(20)
