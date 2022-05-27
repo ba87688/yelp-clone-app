@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -17,8 +19,9 @@ import com.example.yelpcloneapp.R
 import com.example.yelpcloneapp.databinding.ItemRestaurantBinding
 import com.example.yelpcloneapp.models.YelpRestaurant
 
-class RestaurantsAdapter(val context:Context,val restaurantList: List<YelpRestaurant>) :
+class RestaurantsAdapter(val context:Context) :
     RecyclerView.Adapter<RestaurantsAdapter.ViewHolder>(){
+    private var restaurantList: List<YelpRestaurant> = emptyList()
 
     inner class ViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
 
@@ -64,6 +67,14 @@ class RestaurantsAdapter(val context:Context,val restaurantList: List<YelpRestau
         val restaurant = restaurantList[position]
         holder.bind(restaurant)
 
+    }
+
+    fun setData(newPersonList:List<YelpRestaurant>){
+        val diffUtil = MyDiffUtil(restaurantList , newPersonList)
+
+        val diffResults = DiffUtil.calculateDiff(diffUtil)
+        restaurantList = newPersonList
+        diffResults.dispatchUpdatesTo(this)
     }
 
 }

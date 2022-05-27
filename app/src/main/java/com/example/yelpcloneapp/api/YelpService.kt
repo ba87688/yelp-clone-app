@@ -18,6 +18,7 @@ interface YelpService {
     fun searchRestaurants(
         @Header("Authorization") autheader:String,
         @Query("term") searchTerm:String,
-        @Query("location") location: String
+        @Query("location") location: String,
+        @Query("offset") offset: Int? = null
     ): Call<YelpSearchResult>
 }

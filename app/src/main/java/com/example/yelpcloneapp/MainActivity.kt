@@ -24,17 +24,22 @@ private const val BASE_URL = "https://api.yelp.com/v3/"
 class MainActivity : AppCompatActivity() {
 
 
-    var avocado = "Avocado Toast"
-    val restaurants = mutableListOf<YelpRestaurant>()
-    val adapter = RestaurantsAdapter(this, restaurants)
-    val API_KEY2 = YelpService.API_KEY
-    val yelpService = YelpApi.retrofitService
+    private var avocado = "Avocado Toast"
+    private val restaurants = mutableListOf<YelpRestaurant>()
+    private val adapter = RestaurantsAdapter(this)
+
+//    private val adapter = RestaurantsAdapter()
+    private val API_KEY2 = YelpService.API_KEY
+    private val yelpService = YelpApi.retrofitService
 
 
     private lateinit var binding: ActivityMainBinding
+    var loading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        adapter.setData(restaurants)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -42,9 +47,37 @@ class MainActivity : AppCompatActivity() {
 
         val recycler = binding.recyclerView
         recycler.adapter = adapter
-        recycler.layoutManager = LinearLayoutManager(this)
+        val linearLayout =  LinearLayoutManager(this)
+        recycler.layoutManager = linearLayout
 
         getRequest()
+        loading = true
+
+        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
+//                visible items
+                val visibleItemCount: Int = linearLayout.childCount
+                val pastVisibleItem: Int = linearLayout.findFirstCompletelyVisibleItemPosition()
+                Log.i(TAG, "onScrolled visible count: $visibleItemCount")
+                Log.i(TAG, "onScrolled pastvisible item: $pastVisibleItem")
+                val totalNumOfItems = adapter.itemCount
+                Log.i(TAG, "onScrolled: item count $totalNumOfItems")
+                Log.i(TAG, "onScrolled: $loading")
+//                if(!loading){
+//                    Log.i(TAG, "onScrolled: nesteddd     $loading")
+
+                    if(visibleItemCount+pastVisibleItem >=totalNumOfItems ){
+                        getRequest()
+                    }
+//                }
+
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        }
+
+        )
 
 
     }
@@ -87,6 +120,7 @@ class MainActivity : AppCompatActivity() {
                     call: Call<YelpSearchResult>,
                     response: Response<YelpSearchResult>
                 ) {
+
                     Log.i(TAG, "onResponse: ${response}")
                     val body = response.body()
                     if (body == null) {
@@ -95,6 +129,8 @@ class MainActivity : AppCompatActivity() {
                     }
                     restaurants.removeAll(restaurants)
                     restaurants.addAll(body.restaurants)
+
+                    Log.i(TAG, "onResponse: request made")
                     adapter.notifyDataSetChanged()
                 }
 
